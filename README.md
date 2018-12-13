@@ -45,7 +45,7 @@ docker run -td \
 Use this variable if you want to set special options for the "borg serve"-command, which is used internally.
 See the the documentation for all available arguments: [borgbackup.readthedocs.io](https://borgbackup.readthedocs.io/en/1.0.9/usage.html#borg-serve)
 
-Don't add `--append-only` to BORG_SERVE_ARGS if you want to use BORG_SERVE_ARGS but set BORG_APPEND_ONLY instead.
+Don't add `--append-only` to BORG_SERVE_ARGS if you want to use BORG_MANAGER, but set BORG_APPEND_ONLY instead.
 
 ##### Example
 ```
