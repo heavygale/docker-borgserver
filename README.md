@@ -1,3 +1,6 @@
+# Info
+This image is based on Nold360/docker-borgserver. It has been supplemented with options for pruning backups via cronjob and deleting/pruning archiches via ssh for certain PublicKeys - useful if "--append-only" is set via BORG_SERVE_ARGS.
+
 # BorgServer - Docker image
 Debian based container image, running openssh-daemon only accessable by user named "borg" using SSH-Publickey Auth & "borgbackup" as client. Backup-Repositoriees, client's SSH-Keys & SSHd's Hostkeys will be stored in persistent storage.
 For every ssh-key added, a own borg-repository will be created.
@@ -26,10 +29,10 @@ Make sure that the permissions are right on the sshkey folder:
 The OpenSSH-Deamon will expose on port 22/tcp - so you will most likely want to redirect it to a different port. Like in this example:
 ```
 docker run -td \
-			-p 2222:22  \
-			--volume ./borg/sshkeys:/sshkeys \
-			--volume ./borg/backup:/backup \
-			nold360/borgserver:latest
+	-p 2222:22  \
+	--volume ./borg/sshkeys:/sshkeys \
+	--volume ./borg/backup:/backup \
+	heavygale/borgserver:latest
 ```
 
 
@@ -40,12 +43,25 @@ docker run -td \
 ### Environment Variables
 #### BORG_SERVE_ARGS
 Use this variable if you want to set special options for the "borg serve"-command, which is used internally.
-
 See the the documentation for all available arguments: [borgbackup.readthedocs.io](https://borgbackup.readthedocs.io/en/1.0.9/usage.html#borg-serve)
+
+Don't add `--append-only` to BORG_SERVE_ARGS if you want to use BORG_SERVE_ARGS but set BORG_APPEND_ONLY instead.
 
 ##### Example
 ```
-docker run -e BORG_SERVE_ARGS="--append-only --debug" (...) nold360/borgserver
+docker run -e BORG_SERVE_ARGS="--debug" (...) heavygale/borgserver
+```
+
+#### BORG_APPEND_ONLY
+Set this varibale to `YES` if `--append-only` should be added to the "borg serve"-command for every SSH-Keys not listed in BORG_SERVE_ARGS. 
+
+#### BORG_MANAGER
+If `--append-only` is set, it's no longer possible to delete archives or prune the repository. You can define specific SSH-Keys to be exluced from BORG_APPEND_ONLY with this variable, so they are not restricted to "append only". Simply add the filename of 
+each SSH-Key you want to exclude, seperated by whitespaces.
+
+##### Example
+```
+docker run -e BORG_APPEND_ONLY="YES" -e BORG_MANAGER="admin.example.tld backup-ui.domain.tld" (...) heavygale/borgserver
 ```
 
 ### Persistent Storages & Client Configuration
@@ -83,7 +99,7 @@ Here is a quick example, how to run borgserver using docker-compose:
 ```
 services:
  borgserver:
-  image: nold360/borgserver
+  image: heavygale/borgserver
   volumes:
    - /backup:/backup
    - ./sshkeys:/sshkeys
