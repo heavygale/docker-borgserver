@@ -1,5 +1,5 @@
 # Info
-This image is based on Nold360/docker-borgserver. It has been supplemented with options for deleting/pruning archives via ssh for certain PublicKeys - useful if "--append-only" is set via BORG_SERVE_ARGS.
+This image is based on Nold360/docker-borgserver. It has been supplemented with options for deleting/pruning archives via ssh for certain PublicKeys - useful if "--append-only" should be set for all other PublicKeys.
 
 # BorgServer - Docker image
 Debian based container image, running openssh-daemon only accessable by user named "borg" using SSH-Publickey Auth & "borgbackup" as client. Backup-Repositoriees, client's SSH-Keys & SSHd's Hostkeys will be stored in persistent storage.
