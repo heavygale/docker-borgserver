@@ -56,8 +56,7 @@ docker run -e BORG_SERVE_ARGS="--debug" (...) heavygale/borgserver
 Set this varibale to `YES` if `--append-only` should be added to the "borg serve"-command for every SSH-Keys not listed in BORG_SERVE_ARGS. 
 
 #### BORG_MANAGER
-If `--append-only` is set, it's no longer possible to delete archives or prune the repository. You can define specific SSH-Keys to be exluced from BORG_APPEND_ONLY with this variable, so they are not restricted to "append only". Simply add the filename of 
-each SSH-Key you want to exclude, seperated by whitespaces.
+If `--append-only` is set, it's no longer possible to delete archives or prune the repository. You can define specific SSH-Keys (those you want to use for management-access) to be exluced from BORG_APPEND_ONLY with this variable, so they are not restricted to "append only". Simply add the filename of each SSH-Key you want to exclude, seperated by whitespaces.
 
 ##### Example
 ```

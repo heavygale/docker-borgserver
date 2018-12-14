@@ -55,12 +55,12 @@ rm /home/borg/.ssh/authorized_keys &>/dev/null
 for keyfile in $(find "${SSH_KEY_DIR}/clients" -type f); do
 	client_name=$(basename $keyfile)
 
+	mkdir ${BORG_DATA_DIR}/${client_name} 2>/dev/null
 	if [[ " $BORG_MANAGER " != *" ${client_name} "* ]]; then
-		mkdir ${BORG_DATA_DIR}/${client_name} 2>/dev/null
 		echo "  ** Adding client ${client_name} with repo path ${BORG_DATA_DIR}/${client_name}"
 		echo -n "command=\"$(eval echo -n \"${BORG_CMD_BACKUP}\")\" " >> /home/borg/.ssh/authorized_keys
 	else
-		echo "  ** Adding client ${client_name} as manager (no repo path will be created, can access all repos)"
+		echo "  ** Adding client ${client_name} as manager (is able to delete archives and can access all repos)"
 		echo -n "command=\"$(eval echo -n \"${BORG_CMD_MANAGE}\")\" " >> /home/borg/.ssh/authorized_keys
 	fi
 
