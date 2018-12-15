@@ -4,7 +4,7 @@ BORG_DATA_DIR=/backup
 chown borg /home/borg/prune.sh
 
 # Parse environment
-if [ w-z "${BORG_PRUNE_CRON}" ] ; then
+if [ -z "${BORG_PRUNE_CRON}" ] ; then
 	BORG_PRUNE_CRON="0 12 * * *"
 fi
 if [ -z "${BORG_PRUNE_OPTIONS}" ] ; then
