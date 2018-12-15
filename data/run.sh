@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 BORG_DATA_DIR=/backup
@@ -24,7 +25,7 @@ for key in $(env); do
 		echo "REPONAME[$i]="$client_name >> /home/borg/repokeys.sh
 
 		key_val=BORG_REPOKEY_${key:14}
-		if [ -z ${!key_val} ]
+		if [ -z ${!key_val} ]; then
 			echo "  ** Importing repokey for ${BORG_DATA_DIR}/${client_name}"
 			echo "REPOKEY[$i]="$(echo ${!key_val} | cut -f2 -d=) >> /home/borg/repokeys.sh
 		else
