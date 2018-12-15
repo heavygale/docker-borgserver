@@ -41,27 +41,25 @@ docker run -td \
  * Client Repositories will be named by the filename found in /sshkeys/clients/
 
 ### Environment Variables
-#### BORG_SERVE_ARGS
-Use this variable if you want to set special options for the "borg serve"-command, which is used internally.
-See the the documentation for all available arguments: [borgbackup.readthedocs.io](https://borgbackup.readthedocs.io/en/1.0.9/usage.html#borg-serve)
 
-Don't add `--append-only` to BORG_SERVE_ARGS if you want to use BORG_MANAGER, but set BORG_APPEND_ONLY instead.
+#### BORG_PRUNE_OPTIONS
+Don't use single quotes in the value for this variable.
 
-##### Example
-```
-docker run -e BORG_SERVE_ARGS="--debug" (...) heavygale/borgserver
-```
-
-#### BORG_APPEND_ONLY
-Set this varibale to `YES` if `--append-only` should be added to the "borg serve"-command for every SSH-Keys not listed in BORG_SERVE_ARGS. 
-
-#### BORG_MANAGER
+#### BORG_PRUNE_CRON
 If `--append-only` is set, it's no longer possible to delete archives or prune the repository. You can define specific SSH-Keys (those you want to use for management-access) to be exluced from BORG_APPEND_ONLY with this variable, so they are not restricted to "append only". Simply add the filename of each SSH-Key you want to exclude, seperated by whitespaces.
 
 ##### Example
 ```
 docker run -e BORG_APPEND_ONLY="YES" -e BORG_MANAGER="admin.example.tld backup-ui.domain.tld" (...) heavygale/borgserver
 ```
+
+#### BORG_REPOKEY_...
+Repositories using a keyfile are not supported.
+Repokeys (passwors) containing whitespaces mode are not supported.
+
+#### BORG_REPONAME_...
+Repositoy-names containing whitespaces mode are not supported.
+
 
 ### Persistent Storages & Client Configuration
 We will need two persistent storage directories for our borgserver to be usefull.
