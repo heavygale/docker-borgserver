@@ -18,4 +18,4 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
 COPY ./data/run.sh /run.sh
 COPY ./data/prune.sh /home/borg/prune.sh
 
-ENTRYPOINT /run.sh
+ENTRYPOINT ["/run.sh"]

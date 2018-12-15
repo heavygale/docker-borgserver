@@ -23,13 +23,14 @@ for key in $(env); do
 		client_name=$(echo $key | cut -f2 -d=)
 		echo "REPONAME[$i]="$client_name >> /home/borg/repokeys.sh
 
-		key_val=${key:14}
-		key_val=BORG_REPOKEY_$(echo ${key_val} | cut -f1 -d=)
-		if [ -z ${!key_val} ]; then
+		key_num=${key:14}
+		key_num=$(echo ${key_num} | cut -f1 -d=)
+		key_val=BORG_REPOKEY_$key_num
+		if [ ! -z ${!key_val} ]; then
 			echo "  ** Importing repokey for ${BORG_DATA_DIR}/${client_name}"
 			echo "REPOKEY[$i]="${!key_val} >> /home/borg/repokeys.sh
 		else
-			echo "  ** Repokey for ${BORG_DATA_DIR}/${client_name} is missing, either drop BORG_REPONAME_${client_name} or add BORG_REPOKEY_${client_name}!"
+			echo "  ** Repokey for ${BORG_DATA_DIR}/${client_name} is missing, either drop BORG_REPONAME_${key_num} or add BORG_REPOKEY_${key_num}!"
 		fi
 	fi
 	let i++
