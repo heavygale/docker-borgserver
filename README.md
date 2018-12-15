@@ -19,9 +19,9 @@ Use this varible to control the intervall in which the prune-cronjob will be exe
 docker run -e BORG_PRUNE_OPTIONS="--stats --keep-last 30" -e BORG_PRUNE_CRON="0 20 * * *" (...) heavygale/borgserver:crontab
 ```
 
-#### BORG_REPONAME_...
-For each of your repositories being encrypted or authenticated using a repokey as password you need to set one  BORG_REPOKEY_...-Variable and a according BORG_REPOKEY_...-Variable.
-E.g. you have two repositoys in /backup, server_a and server_b, and both weren't created with `--encryption=none` and therefore a repokey is needed when accessing them. In this case you would need to set the variables like this:
+#### BORG_REPONAME_#
+For each of your encrypted or authenticated repositories, using a repokey-passphrase, you need to set one BORG_REPOKEY_#-variable and a according BORG_REPOKEY_#-variable.
+E.g. you have two repositoys in /backup, server_a and server_b, and both weren't created with `--encryption=none` and therefore a repokey-passphrase is needed for accessing them. In this case you need to set the variables like this:
 * BORG_REPONAME_1 = "server_a"
 * BORG_REPOKEY_1 = "verySecurePassword"
 * BORG_REPONAME_2 = "server_b"
@@ -29,10 +29,10 @@ E.g. you have two repositoys in /backup, server_a and server_b, and both weren't
 
 Note: Repositoy-names containing whitespaces mode are not supported.
 
-#### BORG_REPOKEY_...
-See description for BORG_REPONAME_...
-Note: Repokeys (passwors) containing whitespaces mode are not supported.
+#### BORG_REPOKEY_#
+See description for BORG_REPONAME_#
 
+Note: repokey-passphrases containing whitespaces mode are not supported.
 
 ### Persistent Storage /backup
 We need a persistent storage directory containing all the client data. Every repository found in this direcotory will be pruned automatically.
