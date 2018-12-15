@@ -4,7 +4,7 @@
 BORG_DATA_DIR=/backup
 export BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes
 
-/home/borg/repokeys.sh
+source /home/borg/repokeys.sh
 
 echo "########################################################"
 echo " * Start pruning ..."

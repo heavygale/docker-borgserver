@@ -4,7 +4,7 @@ BORG_DATA_DIR=/backup
 chown borg /home/borg/prune.sh
 
 # Parse environment
-if [ ! -z "${BORG_PRUNE_CRON}" ] ; then
+if [ w-z "${BORG_PRUNE_CRON}" ] ; then
 	BORG_PRUNE_CRON="0 12 * * *"
 fi
 if [ -z "${BORG_PRUNE_OPTIONS}" ] ; then
@@ -29,11 +29,11 @@ for key in $(env); do
 		if [ ! -z ${!key_val} ]; then
 			echo "  ** Importing repokey for ${BORG_DATA_DIR}/${client_name}"
 			echo "REPOKEY[$i]="${!key_val} >> /home/borg/repokeys.sh
+			let i++
 		else
 			echo "  ** Repokey for ${BORG_DATA_DIR}/${client_name} is missing, either drop BORG_REPONAME_${key_num} or add BORG_REPOKEY_${key_num}!"
 		fi
 	fi
-	let i++
 done
 
 echo -e "${BORG_PRUNE_CRON} borg /home/borg/prune.sh >> /var/log/cron.log 2>&1\n" > /etc/cron.d/borg
