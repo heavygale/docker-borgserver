@@ -1,5 +1,5 @@
 # Info
-This image is based on Nold360/docker-borgserver. It has been supplemented with options for deleting/pruning archives via ssh for certain PublicKeys - useful if "--append-only" is set via BORG_SERVE_ARGS.
+This image is based on Nold360/docker-borgserver. It has been modified to run a conrjob which will prune all repositories. this image can't be accessed from outside, it's only meant for pruning old archives.
 
 **NOTE Repositories using a keyfile are not supported.**
 
