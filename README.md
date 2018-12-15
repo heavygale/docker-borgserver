@@ -23,9 +23,9 @@ docker run -e BORG_PRUNE_OPTIONS="--stats --keep-last 30" -e BORG_PRUNE_CRON="0 
 For each of your repositories being encrypted or authenticated using a repokey as password you need to set one  BORG_REPOKEY_...-Variable and a according BORG_REPOKEY_...-Variable.
 E.g. you have two repositoys in /backup, server_a and server_b, and both weren't created with `--encryption=none` and therefore a repokey is needed when accessing them. In this case you would need to set the variables like this:
 * BORG_REPONAME_1 = "server_a"
-* BORG_REPOKEY__1 = "verySecurePassword"
+* BORG_REPOKEY_1 = "verySecurePassword"
 * BORG_REPONAME_2 = "server_b"
-* BORG_REPOKEY__2 = "hunter2"
+* BORG_REPOKEY_2 = "hunter2"
 
 Note: Repositoy-names containing whitespaces mode are not supported.
 
