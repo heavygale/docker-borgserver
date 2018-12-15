@@ -1,94 +1,41 @@
 # Info
 This image is based on Nold360/docker-borgserver. It has been supplemented with options for deleting/pruning archives via ssh for certain PublicKeys - useful if "--append-only" is set via BORG_SERVE_ARGS.
 
+**NOTE Repositories using a keyfile are not supported.**
+
 # BorgServer - Docker image
-Debian based container image, running openssh-daemon only accessable by user named "borg" using SSH-Publickey Auth & "borgbackup" as client. Backup-Repositoriees, client's SSH-Keys & SSHd's Hostkeys will be stored in persistent storage.
-For every ssh-key added, a own borg-repository will be created.
-
-**NOTE: I will assume that you know, what a ssh-key is and how to generate & use it. If not, you might want to start here: [Arch Wiki](https://wiki.archlinux.org/index.php/SSH_Keys)**
-
-### Quick Example
-Here is a quick example how to configure & run this image:
-
-#### Create persistent sshkey storage
-```
- $ mkdir -p borg/sshkeys/clients
-```
-
-Make sure that the permissions are right on the sshkey folder:
-```
- $ chown 1000:1000 borg/sshkeys
-```
-
-#### (Generate &) Copy every client's ssh publickey into persistent storage
-*Remember*: Filename = Borg-repository name!
-```
- $ cp ~/.ssh/my_machine.pub borg/sshkeys/clients/my_machine
-```
-
-The OpenSSH-Deamon will expose on port 22/tcp - so you will most likely want to redirect it to a different port. Like in this example:
-```
-docker run -td \
-	-p 2222:22  \
-	--volume ./borg/sshkeys:/sshkeys \
-	--volume ./borg/backup:/backup \
-	heavygale/borgserver:latest
-```
-
-
-## Borgserver Configuration
- * Place Borg-Clients SSH-PublicKeys in persistent storage
- * Client Repositories will be named by the filename found in /sshkeys/clients/
+Debian based container image, running cron-daemon only. Not accessable for storing backups via ssh. Backup-Repositories will be access via persistent storage, all config is saved in environment variables.
 
 ### Environment Variables
 
 #### BORG_PRUNE_OPTIONS
-Don't use single quotes in the value for this variable.
+This variable is passed to `borg prune`, see available options in [the borg docs](https://borgbackup.readthedocs.io/en/stable/usage/prune.html). The default value it you don't set this variable is `--keep-daily=7 --keep-weekly=4 --keep-monthly=6`. Don't use single quotes in the value for this variable, they would break the code.
 
 #### BORG_PRUNE_CRON
-If `--append-only` is set, it's no longer possible to delete archives or prune the repository. You can define specific SSH-Keys (those you want to use for management-access) to be exluced from BORG_APPEND_ONLY with this variable, so they are not restricted to "append only". Simply add the filename of each SSH-Key you want to exclude, seperated by whitespaces.
+Use this varible to control the intervall in which the prune-cronjob will be executed. The default value it you don't set this variable is `0 12 * * *`. Make sure to choose a timeframe in which your repositories are not locked because of running borg-jobs (e.g. running backups via `borg create`).
 
 ##### Example
 ```
-docker run -e BORG_APPEND_ONLY="YES" -e BORG_MANAGER="admin.example.tld backup-ui.domain.tld" (...) heavygale/borgserver
+docker run -e BORG_PRUNE_OPTIONS="--stats --keep-last 30" -e BORG_PRUNE_CRON="0 20 * * *" (...) heavygale/borgserver
 ```
-
-#### BORG_REPOKEY_...
-Repositories using a keyfile are not supported.
-Repokeys (passwors) containing whitespaces mode are not supported.
 
 #### BORG_REPONAME_...
-Repositoy-names containing whitespaces mode are not supported.
+For each of your repositories being encrypted or authenticated using a repokey as password you need to set one  BORG_REPOKEY_...-Variable and a according BORG_REPOKEY_...-Variable.
+E.g. you have two repositoys in /backup, server_a and server_b, and both weren't created with `--encryption=none` and therefore a repokey is needed when accessing them. In this case you would need to set the variables like this:
+* BORG_REPONAME_1 = "server_a"
+* BORG_REPOKEY__1 = "vereSecurePassword"
+* BORG_REPONAME_2 = "server_b"
+* BORG_REPOKEY__2 = "hunter2"
+
+Note: Repositoy-names containing whitespaces mode are not supported.
+
+#### BORG_REPOKEY_...
+See description for BORG_REPONAME_...
+Note: Repokeys (passwors) containing whitespaces mode are not supported.
 
 
-### Persistent Storages & Client Configuration
-We will need two persistent storage directories for our borgserver to be usefull.
-
-#### /sshkeys
-This directory has two subdirectories:
-
-##### /sshkeys/clients/
-Here we will put all SSH public keys from our borg clients, we want to backup. Every key must be it's own file, containing only one line, with the key. The name of the file will become the name of the borg repository, we need for our client to connect.
-
-That means every client get's it's own repository. So you might want to use the hostname of the client as the name of the sshkey file.
-
-```
-F.e. /sshkeys/clients/webserver.mydomain.com
-```
-
-Than your client would have to initiat the borg repository like this:
-```
-webserver.mydomain.com ~$ borg init ssh://borg@borgserver-container/backup/webserver.mydomain.com/my_first_repo
-```
-
-**!IMPORTANT!**: The container wouldn't start the SSH-Deamon until there is at least one ssh-keyfile in this directory!
-
-##### /sshkeys/host/
-This directory will be automaticly created on first start. Also run.sh will copy the SSH-Hostkeys here, so your clients can verify it's borgservers ssh-hostkey.
-
-#### /backup
-In this directory will borg write all the client data to. It's best to start with an empty directory.
-
+### Persistent Storage /backup
+We need a persistent storage directory containing all the client data. Every repository found in this direcotory will be pruned automatically.
 
 ## Example Setup
 ### docker-compose.yml
@@ -99,28 +46,6 @@ services:
   image: heavygale/borgserver
   volumes:
    - /backup:/backup
-   - ./sshkeys:/sshkeys
-  ports:
-   - "2222:22"
   environment:
-   BORG_SERVE_ARGS: "--append-only"
-```
-
-### ~/.ssh/config
-With this configuration (on your borg client) you can easily connect to your borgserver.
-```
-Host backup
-	Hostname my.docker.host
-	Port 2222
-	User borg
-```
-
-Now initiate a borg-repository like this:
-```
- $ borg init backup:my_first_borg_repo
-```
-
-And create your first backup!
-```
- $ borg create backup:my_first_borg_repo::documents-2017-11-01 /home/user/MyImportentDocs
+   BORG_PRUNE_CRON: "0 20 * * *"
 ```
