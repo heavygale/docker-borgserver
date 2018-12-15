@@ -3,7 +3,7 @@ This image is based on Nold360/docker-borgserver. It has been modified to run a 
 
 **NOTE Repositories using a keyfile are not supported.**
 
-# BorgServer - Docker image
+# :crontab - Docker image
 Debian based container image, running cron-daemon only. Not accessable for storing backups via ssh. Backup-Repositories will be access via persistent storage, all config is saved in environment variables.
 
 ### Environment Variables
@@ -16,7 +16,7 @@ Use this varible to control the intervall in which the prune-cronjob will be exe
 
 ##### Example
 ```
-docker run -e BORG_PRUNE_OPTIONS="--stats --keep-last 30" -e BORG_PRUNE_CRON="0 20 * * *" (...) heavygale/borgserver
+docker run -e BORG_PRUNE_OPTIONS="--stats --keep-last 30" -e BORG_PRUNE_CRON="0 20 * * *" (...) heavygale/borgserver:crontab
 ```
 
 #### BORG_REPONAME_...
@@ -43,7 +43,7 @@ Here is a quick example, how to run borgserver using docker-compose:
 ```
 services:
  borgserver:
-  image: heavygale/borgserver
+  image: heavygale/borgserver:crontab
   volumes:
    - /backup:/backup
   environment:
