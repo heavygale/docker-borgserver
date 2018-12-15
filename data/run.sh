@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 BORG_DATA_DIR=/backup
@@ -21,13 +20,14 @@ chmod +x /home/borg/repokeys.sh
 i=1
 for key in $(env); do
 	if [[ $key == "BORG_REPONAME_"* ]]; then
-		$client_name=$(echo $key | cut -f2 -d=)
+		client_name=$(echo $key | cut -f2 -d=)
 		echo "REPONAME[$i]="$client_name >> /home/borg/repokeys.sh
 
-		key_val=BORG_REPOKEY_${key:14}
+		key_val=${key:14}
+		key_val=BORG_REPOKEY_$(echo ${key_val} | cut -f1 -d=)
 		if [ -z ${!key_val} ]; then
 			echo "  ** Importing repokey for ${BORG_DATA_DIR}/${client_name}"
-			echo "REPOKEY[$i]="$(echo ${!key_val} | cut -f2 -d=) >> /home/borg/repokeys.sh
+			echo "REPOKEY[$i]="${!key_val} >> /home/borg/repokeys.sh
 		else
 			echo "  ** Repokey for ${BORG_DATA_DIR}/${client_name} is missing, either drop BORG_REPONAME_${client_name} or add BORG_REPOKEY_${client_name}!"
 		fi
