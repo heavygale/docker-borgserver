@@ -3,7 +3,7 @@ This image is based on Nold360/docker-borgserver. It has been modified to run a 
 
 **NOTE Repositories using a keyfile are not supported.**
 
-# :crontab - Docker image
+# BorgServer - Docker image
 Debian based container image, running cron-daemon only. Not accessable for storing backups via ssh. Backup-Repositories will be access via persistent storage, all config is saved in environment variables.
 
 ### Environment Variables
