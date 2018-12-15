@@ -28,7 +28,7 @@ for key in $(env); do
 	let i++
 done
 
-echo -e "${BORG_PRUNE_CRON} borg /prune.sh >> /var/log/cron.log 2>&1\n" > /etc/cron.d/borg
+echo -e "${BORG_PRUNE_CRON} borg /home/borg/prune.sh >> /var/log/cron.log 2>&1\n" > /etc/cron.d/borg
 cat /dev/null > /var/log/cron.log
 chown borg /var/log/cron.log
 
