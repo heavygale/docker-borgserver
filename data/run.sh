@@ -16,6 +16,11 @@ if [ ! -z "${BORG_SERVE_ARGS}" ] ; then
 	BORG_CMD_MANAGE="${BORG_CMD_MANAGE} ${BORG_SERVE_ARGS}"
 fi
 
+# Set custom SSH port
+if [ ! -z "${SSH_PORT}" ] ; then
+	sed -i "1s/.*/Port ${SSH_PORT}/" /etc/ssh/sshd_config
+fi
+
 # add all sshkeys to borg-user's authorized_keys & create repositories
 echo "########################################################"
 for dir in BORG_DATA_DIR SSH_KEY_DIR ; do
