@@ -1,5 +1,21 @@
 #!/bin/bash
-# Init borg-users .ssh/authorized_keys
+# Start Script for docker-borgserver
+
+PUID=${PUID:-1000}
+PGID=${PGID:-1000}
+
+usermod -o -u "$PUID" borg &>/dev/null
+groupmod -o -g "$PGID" borg &>/dev/null
+
+source /etc/os-release
+echo "########################################################"
+echo -n " * Docker BorgServer powered by "
+borg -V
+echo " * Based on ${PRETTY_NAME}"
+echo "########################################################"
+echo " * User  id: $(id -u borg)"
+echo " * Group id: $(id -g borg)"
+echo "########################################################"
 
 SSH_KEY_DIR=/sshkeys
 BORG_DATA_DIR=/backup
@@ -72,9 +88,9 @@ for keyfile in $(find "${SSH_KEY_DIR}/clients" -type f); do
 	cat $keyfile >> /home/borg/.ssh/authorized_keys
 done
 
-chown -R borg /backup
-chown borg /home/borg/.ssh/authorized_keys
-chmod 700 /home/borg/.ssh/authorized_keys
+chown -R borg:borg /backup
+chown borg:borg /home/borg/.ssh/authorized_keys
+chmod 600 /home/borg/.ssh/authorized_keys
 
 echo " * Init done!"
 echo "########################################################"

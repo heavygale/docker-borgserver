@@ -60,7 +60,7 @@ If `--append-only` is set, it's no longer possible to delete archives or prune t
 
 ##### Example
 ```
-docker run -e BORG_APPEND_ONLY="YES" -e BORG_MANAGER="admin.example.tld backup-ui.domain.tld" (...) heavygale/borgserver
+docker run -rm -e BORG_APPEND_ONLY="YES" -e BORG_MANAGER="admin.example.tld backup-ui.domain.tld" (...) heavygale/borgserver
 ```
 
 ### Persistent Storages & Client Configuration
@@ -105,7 +105,7 @@ services:
   ports:
    - "2222:22"
   environment:
-   BORG_SERVE_ARGS: "--append-only"
+   BORG_APPEND_ONLY: "YES"
 ```
 
 ### ~/.ssh/config
