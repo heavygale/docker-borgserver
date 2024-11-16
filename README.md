@@ -12,11 +12,11 @@ Debian based container image, running cron-daemon only. Not accessable for stori
 This variable is passed to `borg prune`, see available options in [the borg docs](https://borgbackup.readthedocs.io/en/stable/usage/prune.html). The default value it you don't set this variable is `--keep-daily=7 --keep-weekly=4 --keep-monthly=6`. Don't use single quotes in the value for this variable, they would break the code.
 
 #### BORG_PRUNE_CRON
-Use this varible to control the intervall in which the prune-cronjob will be executed. The default value it you don't set this variable is `0 12 * * *`. Make sure to choose a timeframe in which your repositories are not locked because of running borg-jobs (e.g. running backups via `borg create`).
+Use this varible to control the intervall in which the prune-cronjob will be executed. The default value if you don't set this variable is `0 12 * * *`. Make sure to choose a timeframe in which your repositories are not locked because of running borg-jobs (e.g. running backups via `borg create`).
 
 ##### Example
 ```
-docker run -e BORG_PRUNE_OPTIONS="--stats --keep-last 30" -e BORG_PRUNE_CRON="0 20 * * *" (...) heavygale/borgserver:crontab
+docker run -rm -e BORG_PRUNE_OPTIONS="--stats --keep-last 30" -e BORG_PRUNE_CRON="0 20 * * *" (...) heavygale/borgserver:crontab
 ```
 
 #### BORG_REPONAME_#

@@ -3,7 +3,7 @@
 # for pruning repositories via cronjob
 # Based on Debian
 ############################################################
-FROM debian:buster-slim
+FROM debian:bookworm-slim
 
 # Volume for borg repositories
 VOLUME /backup
@@ -12,7 +12,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get -y --no-install-recommends install \
 		borgbackup cron && apt-get clean && \
-		useradd -s /bin/bash -m borg && \
+		useradd -s /bin/bash -m -U borg && \
 		rm -rf /var/lib/apt/lists/* /var/tmp/* /tmp/*
 
 COPY ./data/run.sh /run.sh

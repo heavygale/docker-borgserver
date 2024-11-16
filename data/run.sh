@@ -1,7 +1,23 @@
 #!/bin/bash
 
+PUID=${PUID:-1000}
+PGID=${PGID:-1000}
+
+usermod -o -u "$PUID" borg &>/dev/null
+groupmod -o -g "$PGID" borg &>/dev/null
+
+source /etc/os-release
+echo "########################################################"
+echo -n " * Docker BorgServer for pruning powered by "
+borg -V
+echo " * Based on ${PRETTY_NAME}"
+echo "########################################################"
+echo " * User  id: $(id -u borg)"
+echo " * Group id: $(id -g borg)"
+echo "########################################################"
+
 BORG_DATA_DIR=/backup
-chown borg /home/borg/prune.sh
+chown borg:borg /home/borg/prune.sh
 
 # Parse environment
 if [ -z "${BORG_PRUNE_CRON}" ] ; then
@@ -38,7 +54,7 @@ done
 
 echo -e "${BORG_PRUNE_CRON} borg /home/borg/prune.sh >> /var/log/cron.log 2>&1\n" > /etc/cron.d/borg
 cat /dev/null > /var/log/cron.log
-chown borg /var/log/cron.log
+chown borg:borg /var/log/cron.log
 
 echo " * Init done!"
 echo "########################################################"
