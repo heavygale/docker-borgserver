@@ -3,7 +3,7 @@
 # for pruning repositories via cronjob
 # Based on Debian
 ############################################################
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 # Volume for borg repositories
 VOLUME /backup
